@@ -49,7 +49,10 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .top-title { flex: 1; min-width: 0; border: 0; background: transparent; text-align: center; cursor: pointer; padding: 5px 8px; line-height: 1.25; }
 .top-title span { display: block; font-weight: 700; font-size: 14px; letter-spacing: .03em; }
 .top-title small { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
-.progress-line { position: absolute; bottom: -1px; left: 0; height: 2px; background: var(--accent); transition: width .3s ease; }
+.progress-lines { position: absolute; inset: auto 0 -1px 0; height: 4px; pointer-events: none; }
+.progress-line { position: absolute; left: 0; transition: width .3s ease; }
+.progress-line.surah { bottom: 1px; height: 3px; background: var(--accent); border-radius: 0 3px 3px 0; }
+.progress-line.quran { bottom: 0; height: 1px; background: var(--gold); }
 .feed { position: fixed; inset: 0; height: 100dvh; overflow-y: auto; overscroll-behavior: contain; scroll-snap-type: y mandatory; scroll-behavior: smooth; scrollbar-width: none; }
 .feed::-webkit-scrollbar { display: none; }
 .feed-page { min-height: 100dvh; height: 100dvh; padding: calc(78px + env(safe-area-inset-top)) 24px calc(78px + env(safe-area-inset-bottom)); display: grid; place-items: center; scroll-snap-align: start; scroll-snap-stop: always; overflow-y: auto; background-color: var(--bg); }
