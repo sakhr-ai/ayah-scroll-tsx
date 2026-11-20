@@ -669,16 +669,11 @@ export default function App() {
           <Icon name="moon" />
         </button>
 
-        <div
-          className="progress-line"
-          aria-hidden="true"
-          style={{
-            width: `${Math.min(
-              100,
-              (currentIndex / (TOTAL_VERSES + surahList.length)) * 100,
-            )}%`,
-          }}
-        />
+       <div className="progress-lines" aria-hidden="true">
+  <div className="progress-line surah" style={{ width: `${surahProgress}%` }} />
+  <div className="progress-line quran" style={{ width: `${quranProgress}%` }} />
+  </div>
+        
       </header>
 
       <main
@@ -730,6 +725,13 @@ export default function App() {
                   className="feed-page verse-page"
                   data-key={key}
                   data-index={currentBaseIndex + verseNo}
+                  const surahProgress = currentSummary
+  ? Math.min(100, (currentVerseNo / currentSummary.verseCount) * 100)
+  : 0;
+const quranProgress = Math.min(
+  100,
+  (currentIndex / (TOTAL_VERSES + surahList.length)) * 100,
+);
                   key={key}
                 >
                   <div className="verse-content">
