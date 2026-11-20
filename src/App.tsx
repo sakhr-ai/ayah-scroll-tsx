@@ -628,14 +628,14 @@ export default function App() {
 
   const currentBaseIndex = currentIndex - currentVerseNo;
 
+  // currentIndex also counts the 114 surah title pages; this counts verses only.
+  const versesRead = Math.max(0, currentIndex - (currentSurahId - 1));
+
   // Thick line: how far through the current surah. Thin gold line: whole Qur’an.
   const surahProgress = currentSummary
     ? Math.min(100, (currentVerseNo / currentSummary.verseCount) * 100)
     : 0;
-  const quranProgress = Math.min(
-    100,
-    (currentIndex / (TOTAL_VERSES + surahList.length)) * 100,
-  );
+  const quranProgress = Math.min(100, (versesRead / TOTAL_VERSES) * 100);
 
   return (
     <div className="app-shell">
@@ -794,8 +794,8 @@ export default function App() {
         >
           <Icon name="back" />
         </button>
-        <span>
-          {currentIndex + 1} / {TOTAL_VERSES + surahList.length}
+        <span aria-label={`Verse ${versesRead} of ${TOTAL_VERSES}`}>
+          {versesRead} / {TOTAL_VERSES}
         </span>
         <button
           className="round-control"
