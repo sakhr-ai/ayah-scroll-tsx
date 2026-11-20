@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/thetruetruth/quran-data-kfgqpc@main/css/kfgqpc.font.css');
 :root {
   font-family: 'DM Sans', system-ui, sans-serif;
   color: #202541;
@@ -53,10 +53,10 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .chapter-content, .verse-content { width: min(100%, 680px); margin: auto; text-align: center; }
 .eyebrow { display: block; color: var(--accent); font-size: 11px; line-height: 1.4; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; }
 .ornament, .home-mark { color: var(--gold); font-size: 38px; margin: 24px 0 8px; text-shadow: 0 8px 24px color-mix(in srgb, var(--gold) 22%, transparent); }
-.chapter-ar { direction: rtl; font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-weight: 400; font-size: clamp(52px, 13vw, 76px); line-height: 1.45; color: var(--accent); margin: 4px 0 4px; }
+.chapter-ar { direction: rtl; font-family: "hafs18", serif; font-weight: 400; font-size: clamp(52px, 13vw, 76px); line-height: 1.45; color: var(--accent); margin: 4px 0 4px; }
 .chapter-content h2 { font: 600 clamp(24px, 6vw, 32px)/1.2 'Spectral', Georgia, serif; margin: 2px 0; }
 .chapter-translation { margin: 6px 0 0; color: var(--muted); }
-.bismillah { font: 32px/1.9 'Amiri Quran', serif; margin: 30px 0; color: var(--fg); }
+.bismillah { font: 32px/1.9 "hafs18", serif; margin: 30px 0; color: var(--fg); }
 .chapter-start { margin-top: 35px; padding: 13px 20px; min-height: 48px; border: 1px solid var(--line); background: var(--card); border-radius: 99px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; transition: border-color .18s, transform .18s, background .18s; }
 .chapter-start svg { width: 18px; height: 18px; }
 .chapter-start:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -66,7 +66,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .meta-dot { color: var(--muted); }
 .verse-text { width: 100%; margin-top: clamp(22px, 6vh, 54px); display: flex; align-items: center; flex-direction: column; border: 0; padding: 14px 4px 10px; background: transparent; text-align: center; cursor: pointer; border-radius: 20px; transition: background .2s, transform .2s; }
 .verse-text:hover { background: color-mix(in srgb, var(--card) 68%, transparent); transform: translateY(-2px); }
-.arabic { display: block; width: 100%; direction: rtl; font: 400 clamp(33px, 7vw, 48px)/2 'Amiri Quran', 'Noto Naskh Arabic', serif; }
+.arabic { display: block; width: 100%; direction: rtl; font: 400 clamp(33px, 7vw, 48px)/2 "hafs18", serif; }
 .translation { display: block; width: min(100%, 620px); margin-top: 26px; font: 400 clamp(19px, 4.5vw, 23px)/1.75 'Spectral', Georgia, serif; text-wrap: pretty; }
 .rtl-translation { font-size: clamp(22px, 5vw, 28px); }
 .tap-hint { margin-top: 30px; color: var(--muted); font-size: 12px; opacity: .85; }
@@ -89,13 +89,13 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .surah-number { width: 37px; height: 37px; flex: 0 0 37px; border: 1px solid var(--line); border-radius: 50%; color: var(--accent); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
 .surah-row > span:nth-child(2) { flex: 1; font-size: 14px; font-weight: 600; }
 .surah-row small { display: block; color: var(--muted); font-size: 11px; font-weight: 400; margin-top: 3px; }
-.surah-ar { font: 20px 'Amiri Quran', serif; }
+.surah-ar { font: 20px "hafs18", serif; }
 .saved-row .surah-number { border-color: color-mix(in srgb, var(--gold) 50%, var(--line)); color: var(--gold); }
 .detail-sheet { position: fixed; z-index: 23; inset: auto 0 0; max-height: min(82dvh, 720px); overflow: auto; padding: 12px 24px calc(25px + env(safe-area-inset-bottom)); background: var(--card); border: 1px solid var(--line); border-bottom: 0; border-radius: 24px 24px 0 0; transform: translateY(105%); transition: transform .25s cubic-bezier(.2,.7,.2,1); box-shadow: 0 -18px 55px rgba(0,0,0,.14); }
 .detail-sheet.open { transform: translateY(0); }
 .detail-inner { width: min(100%, 650px); margin: auto; }
 .sheet-grabber { width: 43px; height: 4px; border-radius: 4px; background: var(--line); margin: 0 auto 24px; }
-.detail-arabic { text-align: center; direction: rtl; font: 33px/1.9 'Amiri Quran', serif; margin: 15px 0 8px; }
+.detail-arabic { text-align: center; direction: rtl; font: 33px/1.9 "hafs18", serif; margin: 15px 0 8px; }
 .detail-transliteration { text-align: center; font: italic 17px/1.5 'Spectral', Georgia, serif; color: var(--muted); margin: 0; }
 .detail-translation { text-align: center; font: 19px/1.55 'Spectral', Georgia, serif; margin: 13px auto 22px; max-width: 590px; }
 .action-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
