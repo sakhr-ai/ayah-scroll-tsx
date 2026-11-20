@@ -76,7 +76,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .round-control:hover { background: var(--line); }
 .round-control svg { width: 20px; height: 20px; }
 .scrim { position: fixed; z-index: 20; inset: 0; width: 100%; height: 100%; border: 0; background: var(--overlay); cursor: pointer; animation: fade-in .18s ease both; }
-.drawer { position: fixed; z-index: 22; inset: 0 auto 0 0; width: min(390px, 90vw); padding: calc(24px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom); display: flex; flex-direction: column; background: var(--bg); border-right: 1px solid var(--line); transform: translateX(-105%); transition: transform .28s cubic-bezier(.2,.7,.2,1); box-shadow: 10px 0 40px rgba(0,0,0,.12); }
+.drawer { position: fixed; z-index: 32; inset: 0 auto 0 0; width: min(390px, 90vw); padding: calc(24px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom); display: flex; flex-direction: column; background: var(--bg); border-right: 1px solid var(--line); transform: translateX(-105%); transition: transform .28s cubic-bezier(.2,.7,.2,1); box-shadow: 10px 0 40px rgba(0,0,0,.12); }
 .drawer.open { transform: translateX(0); }
 .drawer-heading { padding: 0 20px 17px; display: flex; align-items: center; justify-content: space-between; }
 .drawer-heading h2 { font: 600 26px/1.2 'Spectral', Georgia, serif; margin: 4px 0 0; }
