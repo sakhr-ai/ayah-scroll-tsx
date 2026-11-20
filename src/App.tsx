@@ -43,6 +43,15 @@ function today() {
     .slice(0, 10);
 }
 
+const RTL_LANGUAGES: Language[] = ['ur'];
+
+// React 18 has no typed `inert` prop; spread it only when needed.
+const inertWhen = (on: boolean) => (on ? ({ inert: '' } as Record<string, string>) : {});
+
+function prefersReducedMotion() {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+}
+
 function verseText(surah: Surah, verseNo: number, language: Language) {
   const verse = surah.verses[verseNo - 1];
   return language === 'en' ? verse.english : verse.translations[language];
@@ -108,6 +117,9 @@ export default function App() {
   const [playbackMode, setPlaybackMode] = useState<'verse' | 'surah' | null>(null);
 
   const feedRef = useRef<HTMLElement>(null);
+  const sheetRef = useRef<HTMLElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const loadRequestRef = useRef(0);
   const savedSet = useMemo(() => new Set(saved), [saved]);
@@ -160,6 +172,9 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? '#0a0e24' : '#f3eee3');
     write('theme', theme);
   }, [theme]);
 
@@ -208,7 +223,10 @@ export default function App() {
       const target = feedRef.current?.querySelector<HTMLElement>(
         `[data-key="${pendingKey}"]`,
       );
-      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target?.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        block: 'start',
+      });
       setPendingKey(null);
     });
   }, [activeSurah, pendingKey]);
@@ -274,6 +292,27 @@ export default function App() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [selected, drawerOpen, homeOpen, currentIndex]);
+
+  const panelOpen = drawerOpen || Boolean(selected);
+
+  // Move focus into a panel when it opens and give it back to the opener on close.
+  useEffect(() => {
+    if (!panelOpen) return;
+
+    returnFocusRef.current = document.activeElement as HTMLElement | null;
+    const panel = drawerOpen ? drawerRef.current : sheetRef.current;
+    const frame = requestAnimationFrame(() => {
+      (
+        panel?.querySelector<HTMLElement>('input') ??
+        panel?.querySelector<HTMLElement>('.action-button, button')
+      )?.focus({ preventScroll: true });
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      returnFocusRef.current?.focus?.({ preventScroll: true });
+    };
+  }, [panelOpen, drawerOpen]);
 
   useEffect(() => () => audioRef.current?.pause(), []);
 
@@ -439,7 +478,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
+      <header className="topbar" {...inertWhen(panelOpen)}>
         <button
           className="icon-button"
           aria-label="Open surah and bookmarks menu"
@@ -466,7 +505,8 @@ export default function App() {
 
         <button
           className="icon-button"
-          aria-label="Toggle light or dark theme"
+          aria-label="Dark mode"
+          aria-pressed={theme === 'dark'}
           onClick={() =>
             setTheme((value) => (value === 'dark' ? 'light' : 'dark'))
           }
@@ -476,6 +516,7 @@ export default function App() {
 
         <div
           className="progress-line"
+          aria-hidden="true"
           style={{
             width: `${Math.min(
               100,
@@ -485,7 +526,12 @@ export default function App() {
         />
       </header>
 
-      <main className="feed" ref={feedRef} aria-label="Qur’an verses">
+      <main
+        className="feed"
+        ref={feedRef}
+        aria-label="Qur’an verses"
+        {...inertWhen(panelOpen || homeOpen)}
+      >
         {activeSurah && (
           <>
             <section
@@ -498,7 +544,7 @@ export default function App() {
                   {activeSurah.type === 'meccan' ? 'Meccan' : 'Medinan'} ·{' '}
                   {activeSurah.verses.length} verses
                 </span>
-                <div className="ornament">۞</div>
+                <div className="ornament" aria-hidden="true">۞</div>
                 <h1 className="chapter-ar" lang="ar" dir="rtl">
                   {activeSurah.name}
                 </h1>
@@ -549,16 +595,10 @@ export default function App() {
                       </span>
                       <span
                         className={`translation ${
-                          language === 'ur' || language === 'bn'
-                            ? 'rtl-translation'
-                            : ''
+                          RTL_LANGUAGES.includes(language) ? 'rtl-translation' : ''
                         }`}
                         lang={language}
-                        dir={
-                          language === 'ur' || language === 'bn'
-                            ? 'rtl'
-                            : 'ltr'
-                        }
+                        dir={RTL_LANGUAGES.includes(language) ? 'rtl' : 'ltr'}
                       >
                         {verseText(activeSurah, verseNo, language)}
                       </span>
@@ -571,7 +611,11 @@ export default function App() {
           </>
         )}
 
-        {loading && <p className="chapter-content">Loading surah…</p>}
+        {loading && (
+          <p className="chapter-content" role="status">
+            Loading surah…
+          </p>
+        )}
         {!loading && loadError && (
           <p className="chapter-content" role="alert">
             {loadError}
@@ -579,7 +623,11 @@ export default function App() {
         )}
       </main>
 
-      <nav className="feed-controls" aria-label="Verse navigation">
+      <nav
+        className="feed-controls"
+        aria-label="Verse navigation"
+        {...inertWhen(panelOpen || homeOpen)}
+      >
         <button
           className="round-control"
           aria-label="Previous verse"
@@ -611,8 +659,11 @@ export default function App() {
 
       <aside
         className={`drawer ${drawerOpen ? 'open' : ''}`}
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
         aria-label="Surahs and saved verses"
-        aria-hidden={!drawerOpen}
+        {...inertWhen(!drawerOpen)}
       >
         <div className="drawer-heading">
           <div>
@@ -631,6 +682,9 @@ export default function App() {
         <label className="search-box">
           <span className="sr-only">Search surahs</span>
           <input
+            type="search"
+            enterKeyHint="search"
+            autoComplete="off"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search surah name or number"
@@ -666,9 +720,15 @@ export default function App() {
           )}
 
           <p className="list-label">ALL SURAHS · 114</p>
+          {query && visibleSurahs.length === 0 && (
+            <p className="list-label" role="status">
+              No surah matches “{query}”.
+            </p>
+          )}
           {visibleSurahs.map((surah) => (
             <button
               className="surah-row"
+              aria-current={surah.id === currentSurahId ? 'true' : undefined}
               key={surah.id}
               onClick={() => {
                 void goTo(`${surah.id}:0`);
@@ -693,11 +753,12 @@ export default function App() {
         role="dialog"
         aria-modal="true"
         aria-label="Verse actions"
-        aria-hidden={!selected}
+        ref={sheetRef}
+        {...inertWhen(!selected)}
       >
         {selectedSurah && selectedVerseNo > 0 && selected && (
           <div className="detail-inner">
-            <div className="sheet-grabber" />
+            <div className="sheet-grabber" aria-hidden="true" />
             <div className="eyebrow">
               {selectedSurah.transliteration} · {selected}
             </div>
@@ -722,6 +783,7 @@ export default function App() {
 
               <button
                 className="action-button"
+                aria-expanded={recitationChoiceOpen && !playing}
                 onClick={() => {
                   if (playing) {
                     stopRecitation();
@@ -763,7 +825,8 @@ export default function App() {
               target="_blank"
               rel="noreferrer"
             >
-              Open tafsir on Quran.com <span>↗</span>
+              Open tafsir on Quran.com <span aria-hidden="true">↗</span>
+              <span className="sr-only">(opens in a new tab)</span>
             </a>
             <p className="source-note">
               For explanation and scholarly commentary, open the tafsir link.
@@ -807,7 +870,10 @@ export default function App() {
                   {todayCount} <small>/ {dailyGoal} verses</small>
                 </b>
               </div>
-              <span className="streak">✦ daily streak</span>
+              <span className="streak">
+                <span aria-hidden="true">✦ </span>
+                {streak}-day streak
+              </span>
               <div className="goal-track">
                 <i
                   style={{
@@ -827,6 +893,7 @@ export default function App() {
                   <button
                     key={item.days}
                     onClick={() => setPlan(item.days)}
+                    aria-pressed={plan === item.days}
                     className={plan === item.days ? 'active' : ''}
                   >
                     {item.label}
